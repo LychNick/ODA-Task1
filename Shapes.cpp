@@ -16,21 +16,6 @@ namespace FrameWork
   }
 
 
-  double getLineLength(std::vector<Point2d>& data, bool isLoop)
-  {
-    double length = 0;
-    for (size_t i = 0; i < data.size() - 1; i++)
-    {
-      length += (data[i + 1] - data[i]).length();
-    }
-    if (isLoop)
-    {
-      length += (data[0] - data[data.size() - 1]).length();
-    }
-    return length;
-  }
-
-
   Square::Square(Point2d leftDown, Point2d rightUp) :
     Shape("Square"),
     leftDown_(leftDown),
