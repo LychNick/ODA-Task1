@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <conio.h>
 
 #include "DataProvider.h"
 #include "FrameWork.h"
@@ -13,7 +14,10 @@ int _tmain(int argc, _TCHAR* argv[])
   _tprintf(_TEXT("%s\n"), argv[0]);
   try
   {
-    FrameWork::loadData();
+    
+    FrameWork::loadShapes();
+    FrameWork::calcShapesParams();
+    FrameWork::drawShapes();
   }
   catch (const std::exception& e)
   {

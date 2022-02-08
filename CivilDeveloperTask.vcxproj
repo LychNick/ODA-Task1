@@ -132,6 +132,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tests|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="DataProvider.cpp" />
+    <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="Point2d.cpp" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataProvider.h" />
+    <ClInclude Include="Drawer.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FrameWork.h" />
     <ClInclude Include="Point2d.h" />
