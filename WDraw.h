@@ -12,11 +12,11 @@ public:
     /************************************************************************/
     /* Основной метод отрисовки                                             */
     /************************************************************************/
-    virtual void drawSegment(const Point2d& p1, const Point2d& p2);
+    virtual void drawSegment(const Point2d& p1, const Point2d& p2) const;
 
     /************************************************************************/
     /*                                                                      */
     /************************************************************************/
-    virtual void drawText(const char* text);
+    virtual void drawText(const char* text) const;
 
 };
