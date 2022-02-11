@@ -16,7 +16,6 @@ namespace FrameWork
   static std::vector<std::shared_ptr<FrameWork::Shape>> baseShapes_;
 
   void loadShapes();
-  void calcShapesParams();
   void drawShapes();
 
 }
