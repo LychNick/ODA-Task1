@@ -37,8 +37,8 @@ void Drawer::drawCircle(std::shared_ptr<FrameWork::Circle> circle) const
   wdraw_.drawText("Drawing Circle:");
   double R = circle->getR();
   Point2d centerPoint = circle->getCenterPoint();
-  double step = 2 * M_PI / FrameWork::segmentsCount_;
-  for (double i = 0; i < FrameWork::segmentsCount_; i++)
+  double step = 2 * M_PI / FrameWork::segmentsCount;
+  for (double i = 0; i < FrameWork::segmentsCount; i++)
   {
     wdraw_.drawSegment(centerPoint + Point2d(R * cos(step * i), R * sin(step * i)),
       centerPoint + Point2d(R * cos(step * (i + 1)), R * sin(step * (i + 1))));
@@ -54,8 +54,8 @@ void Drawer::drawArc(std::shared_ptr<FrameWork::Arc> arc) const
   Point2d centerPoint = arc->getCenterPoint();
   double startR = arc->getStartR();
   double endR = arc->getEndR();
-  double step = (endR - startR) / FrameWork::segmentsCount_;
-  for (double i = 0; i < FrameWork::segmentsCount_; i++)
+  double step = (endR - startR) / FrameWork::segmentsCount;
+  for (double i = 0; i < FrameWork::segmentsCount; i++)
   {
     wdraw_.drawSegment(centerPoint + Point2d(R * cos(startR + step * i), R * sin(startR + step * i)),
       centerPoint + Point2d(R * cos(step * (i + 1)), R * sin(step * (i + 1))));
@@ -86,4 +86,38 @@ void Drawer::drawBrokenLine(std::shared_ptr<FrameWork::BrokenLine> brokenLine) c
   }
   wdraw_.drawText(("Line width: "
     + std::to_string(brokenLine->getLineWidth())).c_str());
+}
+
+void Drawer::drawShape(std::shared_ptr<FrameWork::Shape> shape)
+{
+  switch (shape->getShapeType())
+  {
+  case FrameWork::TYPE_SQUARE:
+  {
+    drawSquare(std::static_pointer_cast<FrameWork::Square>(shape));
+    break;
+  }
+  case FrameWork::TYPE_CIRCLE:
+  {
+    drawCircle(std::static_pointer_cast<FrameWork::Circle>(shape));
+    break;
+  }
+  case FrameWork::TYPE_ARC:
+  {
+    drawArc(std::static_pointer_cast<FrameWork::Arc>(shape));
+    break;
+  }
+  case FrameWork::TYPE_POLYGON:
+  {
+    drawPolygon(std::static_pointer_cast<FrameWork::Polygon>(shape));
+    break;
+  }
+  case FrameWork::TYPE_BROKEN_LINE:
+  {
+    drawBrokenLine(std::static_pointer_cast<FrameWork::BrokenLine>(shape));
+    break;
+  }
+  default:
+    break;
+  }
 }
