@@ -11,8 +11,6 @@
 
 namespace FrameWork
 {
-  double getLineLength(std::vector<Point2d>& data, bool isLoop);
-
   const int TYPE_SQUARE = 1;
   const int TYPE_CIRCLE = 2;
   const int TYPE_ARC = 4;
@@ -21,12 +19,12 @@ namespace FrameWork
 
   const int POINT_SIZE = 2;
 
-  const size_t segmentsCount_ = 4;
+  extern size_t segmentsCount;
 
   class BoundingBox
   {
     public:
-    BoundingBox(Point2d leftDown, Point2d rightUp);
+    BoundingBox(const Point2d& leftDown, const Point2d& rightUp);
     Point2d getLeftDownPoint() const { return leftDown_; };
     Point2d getRightUpPoint() const { return rightUp_; };
   private:
@@ -37,32 +35,29 @@ namespace FrameWork
   class Shape
   {
   public:
-    Shape(std::string name);
+    Shape();
     virtual ~Shape(void);
 
-    virtual void calcBoundingBox() = 0;
-    virtual void calcLineWidth() = 0;
-
     virtual int getShapeType() const = 0;
-    std::string getName(void) const;
-    std::shared_ptr<BoundingBox> getBoundingBox() const
-    { return boundingBox_; };
-    double getLineWidth() const { return lineWidth_; };
-  private:
-    std::string name_;
+
+    std::shared_ptr<BoundingBox> getBoundingBox() const;
+    double getLineWidth() const;
+
   protected:
-    std::shared_ptr<BoundingBox> boundingBox_;
-    double lineWidth_ = 0;
+    virtual void calcBoundingBox() const = 0;
+    virtual void calcLineWidth() const = 0;
+    mutable std::shared_ptr<BoundingBox> boundingBox_;
+    mutable double lineWidth_ = 0;
   };
 
 
   class Square : public Shape
   {
   public:
-    Square(Point2d leftDown, Point2d rightUp);
+    Square(const Point2d& leftDown, const Point2d& rightUp);
     int getShapeType() const override { return TYPE_SQUARE; };
-    void calcBoundingBox() override;
-    void calcLineWidth() override;
+    void calcBoundingBox() const override;
+    void calcLineWidth() const override;
     Point2d getLeftDownPoint() const { return leftDown_; };
     Point2d getRightUpPoint() const { return rightUp_; };
   private:
@@ -73,10 +68,10 @@ namespace FrameWork
   class Circle : public Shape
   {
   public:
-    Circle(Point2d centerPoint, double R);
+    Circle(const Point2d& centerPoint, double R);
     int getShapeType() const override { return TYPE_CIRCLE; };
-    void calcBoundingBox() override;
-    void calcLineWidth() override;
+    void calcBoundingBox() const override;
+    void calcLineWidth() const override;
     Point2d getCenterPoint() const { return centerPoint_; };
     double getR() const { return R_; };
   private:
@@ -87,10 +82,10 @@ namespace FrameWork
   class Arc : public Shape
   {
   public:
-    Arc(Point2d centerPoint, double R, double startR, double endR);
+    Arc(const Point2d& centerPoint, double R, double startR, double endR);
     int getShapeType() const override { return TYPE_ARC; };
-    void calcBoundingBox() override;
-    void calcLineWidth() override;
+    void calcBoundingBox() const override;
+    void calcLineWidth() const override;
     Point2d getCenterPoint() const { return centerPoint_; };
     double getR() const { return R_; };
     double getStartR() const { return startR_; };
@@ -105,10 +100,11 @@ namespace FrameWork
   class Polygon : public Shape
   {
   public:
+    Polygon(const std::vector<Point2d>& points);
     Polygon(std::vector<Point2d>&& points);
     int getShapeType() const override { return TYPE_POLYGON; };
-    void calcBoundingBox() override;
-    void calcLineWidth() override;
+    void calcBoundingBox() const override;
+    void calcLineWidth() const override;
     std::vector<Point2d> getPoints() const { return points_; };
   private:
     std::vector<Point2d> points_;
@@ -117,23 +113,25 @@ namespace FrameWork
   class BrokenLine : public Shape
   {
   public:
+    BrokenLine(const std::vector<Point2d>& points);
     BrokenLine(std::vector<Point2d>&& points);
     int getShapeType() const override { return TYPE_BROKEN_LINE; };
-    void calcBoundingBox() override;
-    void calcLineWidth() override;
+    void calcBoundingBox() const override;
+    void calcLineWidth() const override;
     std::vector<Point2d> getPoints() const { return points_; };
   private:
     std::vector<Point2d> points_;
   };
 
 
-  class ShapeFabric //Reader
+  class ShapeFactory //Reader
   {
   public:
-    static std::shared_ptr<Square> buildSquare(std::vector<double>& data);
-    static std::shared_ptr<Circle> buildCircle(std::vector<double>& data);
-    static std::shared_ptr<Arc> buildArc(std::vector<double>& data);
-    static std::shared_ptr<Polygon> buildPolygon(std::vector<double>& data);
-    static std::shared_ptr<BrokenLine> buildBrokenLine(std::vector<double>& data);
+    static std::shared_ptr<Square> buildSquare(const std::vector<double>& data);
+    static std::shared_ptr<Circle> buildCircle(const std::vector<double>& data);
+    static std::shared_ptr<Arc> buildArc(const std::vector<double>& data);
+    static std::shared_ptr<Polygon> buildPolygon(const std::vector<double>& data);
+    static std::shared_ptr<BrokenLine> buildBrokenLine(const std::vector<double>& data);
+    static std::shared_ptr<Shape> buildShape(const int& type, const std::vector<double>& data);
   };
 }

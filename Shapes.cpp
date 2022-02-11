@@ -2,59 +2,65 @@
 
 namespace FrameWork
 {
-  Shape::Shape(std::string name) :
-    name_(name)
+  Shape::Shape()
   {
   }
   Shape::~Shape(void)
   {
   }
 
-  std::string Shape::getName(void) const
+  std::shared_ptr<BoundingBox> Shape::getBoundingBox() const
   {
-    return name_;
+    calcBoundingBox();
+    return boundingBox_;
+  }
+
+  double Shape::getLineWidth() const
+  {
+    calcLineWidth();
+    return lineWidth_;
   }
 
 
-  Square::Square(Point2d leftDown, Point2d rightUp) :
-    Shape("Square"),
+  Square::Square(const Point2d& leftDown, const Point2d& rightUp) :
+    Shape(),
     leftDown_(leftDown),
     rightUp_(rightUp)
   {
   }
 
-  void Square::calcBoundingBox()
+  void Square::calcBoundingBox() const
   {
     boundingBox_ = std::make_shared<BoundingBox>(leftDown_, rightUp_);
   }
 
-  void Square::calcLineWidth()
+  void Square::calcLineWidth() const
   {
     Point2d diff = rightUp_ - leftDown_;
     lineWidth_ = 2 * (diff.x() + diff.y());
   }
 
-  Circle::Circle(Point2d centerPoint, double R) :
-    Shape("Circle"),
+  Circle::Circle(const Point2d& centerPoint, double R) :
+    Shape(),
     centerPoint_(centerPoint),
     R_(R)
   {
   }
 
-  void Circle::calcBoundingBox()
+  void Circle::calcBoundingBox() const
   {
     boundingBox_ = std::make_shared<BoundingBox>(centerPoint_ + Point2d(-R_, -R_),
       centerPoint_ + Point2d(R_, R_));
   }
 
-  void Circle::calcLineWidth()
+  void Circle::calcLineWidth() const
   {
-    double step = 2 * M_PI / FrameWork::segmentsCount_;
-    lineWidth_ = FrameWork::segmentsCount_ * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+    double step = 2 * M_PI / FrameWork::segmentsCount;
+    lineWidth_ = FrameWork::segmentsCount * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
   }
 
-  Arc::Arc(Point2d centerPoint, double R, double startR, double endR) :
-    Shape("Arc"),
+  Arc::Arc(const Point2d& centerPoint, double R, double startR, double endR) :
+    Shape(),
     centerPoint_(centerPoint),
     R_(R),
     startR_(startR),
@@ -62,12 +68,12 @@ namespace FrameWork
   {
   }
 
-  void Arc::calcBoundingBox()
+  void Arc::calcBoundingBox() const
   {
-    double step = (endR_ - startR_) / FrameWork::segmentsCount_;
+    double step = (endR_ - startR_) / FrameWork::segmentsCount;
     Point2d leftDown(R_, R_);
     Point2d rightUp(-R_, -R_);
-    for (double i = 0; i <= FrameWork::segmentsCount_; i++)
+    for (double i = 0; i <= FrameWork::segmentsCount; i++)
     {
       Point2d point = centerPoint_ + Point2d(R_ * cos(startR_ + step * i),
         R_ * sin(startR_ + step * i));
@@ -91,19 +97,25 @@ namespace FrameWork
     boundingBox_ = std::make_shared<BoundingBox>(leftDown, rightUp);
   }
 
-  void Arc::calcLineWidth()
+  void Arc::calcLineWidth() const
   {
-    double step = (endR_ - startR_) / FrameWork::segmentsCount_;
-    lineWidth_ = FrameWork::segmentsCount_ * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+    double step = (endR_ - startR_) / FrameWork::segmentsCount;
+    lineWidth_ = FrameWork::segmentsCount * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+  }
+
+  Polygon::Polygon(const std::vector<Point2d>& points) :
+    Shape(),
+    points_(points)
+  {
   }
 
   Polygon::Polygon(std::vector<Point2d> && points) :
-    Shape("Polygon"),
+    Shape(),
     points_(std::move(points))
   {
   }
 
-  void Polygon::calcBoundingBox()
+  void Polygon::calcBoundingBox() const
   {
     Point2d leftDown = points_[0];
     Point2d rightUp = points_[0];
@@ -129,7 +141,7 @@ namespace FrameWork
     boundingBox_ = std::make_shared<BoundingBox>(leftDown, rightUp);
   }
 
-  void Polygon::calcLineWidth()
+  void Polygon::calcLineWidth() const
   {
     lineWidth_ = 0;
     for (size_t i = 0; i < points_.size() - 1; i++)
@@ -139,13 +151,19 @@ namespace FrameWork
     lineWidth_ += (points_[0] - points_[points_.size() - 1]).length();
   }
 
+  BrokenLine::BrokenLine(const std::vector<Point2d>& points) :
+    Shape(),
+    points_(points)
+  {
+  }
+
   BrokenLine::BrokenLine(std::vector<Point2d> && points) :
-    Shape("BrokenLine"),
+    Shape(),
     points_(std::move(points))
   {
   }
 
-  void BrokenLine::calcBoundingBox()
+  void BrokenLine::calcBoundingBox() const
   {
     Point2d leftDown = points_[0];
     Point2d rightUp = points_[0];
@@ -171,7 +189,7 @@ namespace FrameWork
     boundingBox_ = std::make_shared<BoundingBox>(leftDown, rightUp);
   }
 
-  void BrokenLine::calcLineWidth()
+  void BrokenLine::calcLineWidth() const
   {
     lineWidth_ = 0;
     for (size_t i = 0; i < points_.size() - 1; i++)
@@ -180,7 +198,7 @@ namespace FrameWork
     }
   }
 
-  std::shared_ptr<Square> ShapeFabric::buildSquare(std::vector<double> & data)
+  std::shared_ptr<Square> ShapeFactory::buildSquare(const std::vector<double> & data)
   {
     if (data.size() != 4)
     {
@@ -189,7 +207,7 @@ namespace FrameWork
     return std::make_shared<Square>(Point2d(data[0], data[1]), Point2d(data[2], data[3]));
   }
 
-  std::shared_ptr<Circle> ShapeFabric::buildCircle(std::vector<double> & data)
+  std::shared_ptr<Circle> ShapeFactory::buildCircle(const std::vector<double> & data)
   {
     if (data.size() != 3)
     {
@@ -198,7 +216,7 @@ namespace FrameWork
     return std::make_shared<Circle>(Point2d(data[0], data[1]), data[2]);
   }
 
-  std::shared_ptr<Arc> ShapeFabric::buildArc(std::vector<double> & data)
+  std::shared_ptr<Arc> ShapeFactory::buildArc(const std::vector<double> & data)
   {
     if (data.size() != 5)
     {
@@ -207,7 +225,7 @@ namespace FrameWork
     return std::make_shared<Arc>(Point2d(data[0], data[1]), data[2], data[3], data[4]);
   }
 
-  std::shared_ptr<Polygon> ShapeFabric::buildPolygon(std::vector<double> & data)
+  std::shared_ptr<Polygon> ShapeFactory::buildPolygon(const std::vector<double> & data)
   {
     if ((data.size() % 2 != 0) || (data.size() < 3 * POINT_SIZE))
     {
@@ -223,7 +241,7 @@ namespace FrameWork
     return std::make_shared<Polygon>(std::move(points));
   }
 
-  std::shared_ptr<BrokenLine> ShapeFabric::buildBrokenLine(std::vector<double> & data)
+  std::shared_ptr<BrokenLine> ShapeFactory::buildBrokenLine(const std::vector<double> & data)
   {
     if ((data.size() % 2 != 0) || (data.size() < 2 * POINT_SIZE))
     {
@@ -239,7 +257,42 @@ namespace FrameWork
     return std::make_shared<BrokenLine>(std::move(points));
   }
 
-  BoundingBox::BoundingBox(Point2d leftDown, Point2d rightUp) :
+  std::shared_ptr<Shape> ShapeFactory::buildShape(const int& type, const std::vector<double>& data)
+  {
+    switch (type)
+    {
+    case TYPE_SQUARE:
+    {
+      return ShapeFactory::buildSquare(data);
+      break;
+    }
+    case TYPE_CIRCLE:
+    {
+      return ShapeFactory::buildCircle(data);
+      break;
+    }
+    case TYPE_ARC:
+    {
+      return ShapeFactory::buildArc(data);
+      break;
+    }
+    case TYPE_POLYGON:
+    {
+      return ShapeFactory::buildPolygon(data);
+      break;
+    }
+    case TYPE_BROKEN_LINE:
+    {
+      return ShapeFactory::buildBrokenLine(data);
+      break;
+    }
+    default:
+      return nullptr;
+      break;
+    }
+  }
+
+  BoundingBox::BoundingBox(const Point2d& leftDown, const Point2d& rightUp) :
     leftDown_(leftDown),
     rightUp_(rightUp)
   {
