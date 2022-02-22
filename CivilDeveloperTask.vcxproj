@@ -135,6 +135,8 @@
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="FrameWork.cpp" />
+    <ClCompile Include="OpenGLDrawer.cpp" />
+    <ClCompile Include="OpenGLWorker.cpp" />
     <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Test.cpp">
@@ -149,6 +151,8 @@
     <ClInclude Include="Drawer.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FrameWork.h" />
+    <ClInclude Include="OpenGLDrawer.h" />
+    <ClInclude Include="OpenGLWorker.h" />
     <ClInclude Include="Point2d.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="WDraw.h" />

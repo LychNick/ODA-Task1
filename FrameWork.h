@@ -9,9 +9,11 @@
 #include "Shapes.h"
 #include "Drawer.h"
 
+#include "OpenGLDrawer.h"
+
 namespace FrameWork
 {
-  static Drawer drawer_;
+  static OpenGLDrawer drawer_;
 
   static std::vector<std::shared_ptr<FrameWork::Shape>> baseShapes_;
 

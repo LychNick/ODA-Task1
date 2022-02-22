@@ -64,6 +64,7 @@ namespace FrameWork
 
   void drawShapes()
   {
+    drawer_.createWindow();
     for (size_t i = 0; i < baseShapes_.size(); i++)
     {
       drawer_.drawShape(baseShapes_[i]);
@@ -72,5 +73,6 @@ namespace FrameWork
         drawer_.drawBoundingBox(baseShapes_[i]->getBoundingBox());
       }
     }
+    drawer_.startLoop();
   }
 }

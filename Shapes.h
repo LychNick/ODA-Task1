@@ -49,7 +49,11 @@ namespace FrameWork
     mutable std::shared_ptr<BoundingBox> boundingBox_;
     mutable double lineWidth_ = 0;
   };
-
+  
+  struct DrawableEntity
+  {
+    std::shared_ptr<FrameWork::Shape> shape;
+  };
 
   class Square : public Shape
   {
