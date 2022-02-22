@@ -71,8 +71,8 @@ namespace FrameWork
   void Arc::calcBoundingBox() const
   {
     double step = (endR_ - startR_) / FrameWork::segmentsCount;
-    Point2d leftDown(R_, R_);
-    Point2d rightUp(-R_, -R_);
+    Point2d leftDown = centerPoint_ + Point2d(R_, R_);
+    Point2d rightUp = centerPoint_ - Point2d(R_, R_);
     for (double i = 0; i <= FrameWork::segmentsCount; i++)
     {
       Point2d point = centerPoint_ + Point2d(R_ * cos(startR_ + step * i),
