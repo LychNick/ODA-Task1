@@ -64,7 +64,7 @@ void Drawer::drawArc(std::shared_ptr<FrameWork::Arc> arc) const
     + std::to_string(arc->getLineWidth())).c_str());
 }
 
-void Drawer::drawPolygon(std::shared_ptr<FrameWork::Polygon> polygon)
+void Drawer::drawPolygon(std::shared_ptr<FrameWork::Polygon> polygon) const
 {
   wdraw_.drawText("Drawing Polygon:");
   for (size_t i = 0; i < polygon->getPoints().size() - 1; i++)
