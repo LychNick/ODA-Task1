@@ -1,7 +1,7 @@
 #include "Exceptions.h"
 
 
-Exception::Exception(std::wstring message) :
+Exception::Exception(const std::wstring& message) :
   message_(message)
 {}
 

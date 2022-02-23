@@ -11,7 +11,7 @@ OpenGLWorker::~OpenGLWorker(void)
 {
 }
 
-GLuint createShader(GLuint type, std::wstring file)
+GLuint createShader(GLuint type, const std::wstring& file)
 {
   GLuint newShader = glCreateShader(type);
   if (!newShader)
@@ -57,7 +57,7 @@ GLuint createShader(GLuint type, std::wstring file)
   return newShader;
 };
 
-GLuint createShaderProgram(std::vector<GLuint>& shaders)
+GLuint createShaderProgram(const std::vector<GLuint>& shaders)
 {
   GLuint programHandle = glCreateProgram();
   if (!programHandle)
@@ -96,7 +96,7 @@ GLuint createShaderProgram(std::vector<GLuint>& shaders)
   return programHandle;
 };
 
-GLuint createShaderPair(std::wstring fragmentShader, std::wstring vertexShader)
+GLuint createShaderPair(const std::wstring& fragmentShader, const std::wstring& vertexShader)
 {
   std::vector <GLuint> shaders;
   GLuint fragShader = createShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -144,7 +144,7 @@ void OpenGLWorker::openGLInit() const
 
 
 
-void OpenGLWorker::createWindow(std::string name) const
+void OpenGLWorker::createWindow(const std::string& name) const
 {
   glutInitWindowSize(static_cast<int>(winParams.x),
     static_cast<int>(winParams.y));
@@ -178,7 +178,7 @@ void OpenGLWorker::createWindow(std::string name) const
 }
 
 
-void OpenGLWorker::drawEntity(OpenGLEntity& entity) const
+void OpenGLWorker::drawEntity(const OpenGLEntity& entity) const
 {
   glUseProgram(mainShader_);
   checkGLError(__FILE__, __LINE__);
@@ -221,7 +221,7 @@ void OpenGLWorker::drawEntity(OpenGLEntity& entity) const
   glBindVertexArray(0);
 }
 
-void OpenGLWorker::checkGLError(std::string file, GLuint line) const
+void OpenGLWorker::checkGLError(const std::string& file, GLuint line) const
 {
   GLenum error = glGetError();
   if (error != 0) 

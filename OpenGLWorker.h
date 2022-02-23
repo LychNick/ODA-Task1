@@ -36,10 +36,10 @@ public:
 
   void setCurrentDir();
   void openGLInit() const;
-  void setupWindowParams(glm::vec2 params) { winParams = params; };
-  void createWindow(std::string name) const;
-  void drawEntity(OpenGLEntity& entity) const;
-  void checkGLError(std::string file, GLuint line) const;
+  void setupWindowParams(const glm::vec2& params) { winParams = params; };
+  void createWindow(const std::string& name) const;
+  void drawEntity(const OpenGLEntity& entity) const;
+  void checkGLError(const std::string& file, GLuint line) const;
 
   GLfloat globalScale = 1.f;
   glm::mat4 Translate = glm::mat4(1.f);

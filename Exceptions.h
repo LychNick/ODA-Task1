@@ -5,7 +5,7 @@
 class Exception
 {
 public:
-  Exception(std::wstring message);
+  Exception(const std::wstring& message);
   ~Exception();
   std::wstring what() const;
 
