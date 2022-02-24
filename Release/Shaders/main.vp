@@ -1,0 +1,17 @@
+#version 130
+
+in vec3 VertexPosition;
+
+out vec4 Color;
+
+uniform mat4 Matrix;
+uniform mat4 Translate;
+uniform mat4 Rotate;
+uniform mat4 Scale;
+
+
+
+void main()
+{
+	gl_Position = Matrix * Scale * Translate * Rotate * vec4(VertexPosition,1.0);	
+}
