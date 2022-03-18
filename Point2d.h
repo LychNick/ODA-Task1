@@ -22,22 +22,13 @@ private:
     double m_dY;
 };
 
-template<typename T>
+template<int L, typename T>
 class Point
 {
 public:
-  Point(T xx, T yy);
-  ~Point();
-  Point operator+(const Point& rPoint) const;
-  Point operator-(const Point& rPoint) const;
-  double length() const;
-  T x() const { return m_dX; }
-  T y() const { return m_dY; }
-  void setX(T x) { m_dX = x; }
-  void setY(T y) { m_dY = y; }
+  Point() 
+  {}
+  ~Point() {};
 private:
-  T m_dX;
-  T m_dY;
+  T params_[L];
 };
-
-
