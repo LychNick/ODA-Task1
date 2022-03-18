@@ -3,20 +3,21 @@
 
 #include <iostream>
 #include <conio.h>
-
-#include "DataProvider.h"
-#include "FrameWork.h"
 #include <tchar.h>
+
+#include "FrameWork.h"
+#include "TestLoader.h"
+#include "OpenGLDrawer.h"
+#include "WDrawer.h"
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
   _tprintf(_TEXT("%s\n"), argv[0]);
   try
-  {    
-    FrameWork::segmentsCount = 200;
-    FrameWork::loadShapes();
-    FrameWork::drawShapes();
+  { 
+    FrameWork::loadShapes(std::make_unique<TestLoader>());
+    FrameWork::drawShapes(std::make_unique<OpenGLDrawer>(), 1/10.);
   }
   catch (const std::exception& e)
   {
@@ -25,7 +26,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   catch (const Exception& e)
   {
-    fprintf(stderr, "%S\n", e.what().c_str());
+    fprintf(stderr, "%ls\n", e.what().c_str());
     exit(1);
   }
   _getch();

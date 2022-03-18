@@ -2,77 +2,14 @@
 
 namespace FrameWork
 {
-  size_t segmentsCount = 4;
-  void FrameWork::loadShapes()
+  void loadShapes(const std::unique_ptr<Loader> loader)
   {
-    DataProvider dataProvider;
-
-    size_t count = 0;
-    try
-    {
-      count = dataProvider.rdInt();
-      printf("count %i\n", count);
-      for (size_t i = 0; i < count; i++)
-      {
-        int type = dataProvider.rdInt();
-        printf("\ntype %i\n", type);
-
-        size_t dataSize = dataProvider.rdInt();
-        printf("data size: %i\n", dataSize);
-        std::vector<double> data;
-        bool isGood = true;
-        for (size_t j = 0; j < dataSize; j++)
-        {
-          try
-          {
-            double dataElement = dataProvider.rdDouble();
-            data.push_back(dataElement);
-            printf(" %f", dataElement);
-          }
-          catch (const ReadError&)
-          {
-            isGood = false;
-            printf("\n%s\n", "ReadError skip");
-          }
-        }
-        printf("\n");
-        if (isGood)
-        {
-          std::shared_ptr<Shape> shape = ShapeFactory::buildShape(type, data);
-          
-          if (!shape)
-          {
-            printf("%s\n", ("Unknown shape: " + std::to_string(type)).c_str());
-          }
-          else 
-          {
-            baseShapes_.push_back(shape);
-          }
-        }
-      }
-    }
-    catch (const ReadError&)
-    {
-      printf("\n%s\n", "ReadError skip");
-    }
-    catch (const EndOfFile&)
-    {
-      printf("%s\n", "End of file");
-    }
+    baseShapes_ = loader->loadShapes();
   }
 
-
-  void drawShapes()
+  void drawShapes(const std::unique_ptr<Drawer> drawer, double detailing)
   {
-    drawer_.createWindow();
-    for (size_t i = 0; i < baseShapes_.size(); i++)
-    {
-      drawer_.drawShape(baseShapes_[i]);
-      if (baseShapes_[i]->getBoundingBox()) 
-      {
-        drawer_.drawBoundingBox(baseShapes_[i]->getBoundingBox());
-      }
-    }
-    drawer_.startLoop();
+    drawer->setupDetailing(detailing);
+    drawer->drawShapes(baseShapes_);
   }
 }

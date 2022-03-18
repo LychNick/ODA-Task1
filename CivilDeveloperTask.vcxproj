@@ -18,17 +18,18 @@
     <ProjectGuid>{20ABC8FE-E732-4B20-ADAA-102024F9CC8B}</ProjectGuid>
     <RootNamespace>CivilDeveloperTask</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Tests|Win32'" Label="Configuration">
@@ -79,7 +80,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -132,11 +133,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tests|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="DataProvider.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="FrameWork.cpp" />
+    <ClCompile Include="OpenGLDraw.cpp" />
     <ClCompile Include="OpenGLDrawer.cpp" />
-    <ClCompile Include="OpenGLWorker.cpp" />
     <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Test.cpp">
@@ -144,18 +146,25 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="TestLoader.cpp" />
     <ClCompile Include="WDraw.cpp" />
+    <ClCompile Include="WDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryLoader.h" />
     <ClInclude Include="DataProvider.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="Drawer.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="FrameWork.h" />
+    <ClInclude Include="Loader.h" />
+    <ClInclude Include="OpenGLDraw.h" />
     <ClInclude Include="OpenGLDrawer.h" />
-    <ClInclude Include="OpenGLWorker.h" />
     <ClInclude Include="Point2d.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="TestLoader.h" />
     <ClInclude Include="WDraw.h" />
+    <ClInclude Include="WDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
