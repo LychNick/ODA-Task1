@@ -19,8 +19,6 @@ namespace FrameWork
 
   const int POINT_SIZE = 2;
 
-  extern size_t segmentsCount;
-
   class BoundingBox
   {
     public:
@@ -78,6 +76,7 @@ namespace FrameWork
     void calcLineWidth() const override;
     Point2d getCenterPoint() const { return centerPoint_; };
     double getR() const { return R_; };
+    int getSegmentsCount() const;
   private:
     Point2d centerPoint_;
     double R_;
@@ -94,6 +93,7 @@ namespace FrameWork
     double getR() const { return R_; };
     double getStartR() const { return startR_; };
     double getEndR() const { return endR_; };
+    int getSegmentsCount() const;
   private:
     Point2d centerPoint_;
     double R_;

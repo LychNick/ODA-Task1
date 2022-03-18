@@ -4,20 +4,22 @@
 #include <math.h>
 
 #include "Shapes.h"
-#include "WDraw.h"
+#include "Draw.h"
 
 class Drawer
 {
 public:
-  Drawer();
-  virtual ~Drawer();
-  virtual void drawBoundingBox(std::shared_ptr<FrameWork::BoundingBox> box) const;
-  virtual void drawSquare(std::shared_ptr<FrameWork::Square> square) const;
-  virtual void drawCircle(std::shared_ptr<FrameWork::Circle> circle) const;
-  virtual void drawArc(std::shared_ptr<FrameWork::Arc> arc) const;
-  virtual void drawPolygon(std::shared_ptr<FrameWork::Polygon> polygon) const;
-  virtual void drawBrokenLine(std::shared_ptr<FrameWork::BrokenLine> brokenLine) const;
-  void drawShape(std::shared_ptr<FrameWork::Shape> shape);
+	Drawer() = default;
+	~Drawer() = default;
+	void drawBoundingBox(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::BoundingBox> box) const;
+	void drawSquare(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Square> square) const;
+	void drawCircle(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Circle> circle) const;
+	void drawArc(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Arc> arc) const;
+	void drawPolygon(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Polygon> polygon) const;
+	void drawBrokenLine(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::BrokenLine> brokenLine) const;
+	void drawShape(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Shape> shape) const;
+	virtual void drawShapes(const std::vector<std::shared_ptr<FrameWork::Shape>>& shapes) const = 0;
+	void setupDetailing(double detailing);
 private:
-  WDraw wdraw_;
+	double detailing_ = 1;
 };

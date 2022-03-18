@@ -2,6 +2,8 @@
 
 namespace FrameWork
 {
+  const double normsSegments_ = 4;
+
   Shape::Shape()
   {
   }
@@ -55,8 +57,14 @@ namespace FrameWork
 
   void Circle::calcLineWidth() const
   {
-    double step = 2 * M_PI / FrameWork::segmentsCount;
-    lineWidth_ = FrameWork::segmentsCount * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+    int segmentsCount = getSegmentsCount();
+    double step = 2 * M_PI / segmentsCount;
+    lineWidth_ = segmentsCount * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+  }
+
+  int Circle::getSegmentsCount() const
+  {
+    return normsSegments_ * R_;
   }
 
   Arc::Arc(const Point2d& centerPoint, double R, double startR, double endR) :
@@ -70,10 +78,11 @@ namespace FrameWork
 
   void Arc::calcBoundingBox() const
   {
-    double step = (endR_ - startR_) / FrameWork::segmentsCount;
+    int segmentsCount = getSegmentsCount();
+    double step = (endR_ - startR_) / segmentsCount;
     Point2d leftDown = centerPoint_ + Point2d(R_, R_);
     Point2d rightUp = centerPoint_ - Point2d(R_, R_);
-    for (double i = 0; i <= FrameWork::segmentsCount; i++)
+    for (double i = 0; i <= segmentsCount; i++)
     {
       Point2d point = centerPoint_ + Point2d(R_ * cos(startR_ + step * i),
         R_ * sin(startR_ + step * i));
@@ -99,8 +108,14 @@ namespace FrameWork
 
   void Arc::calcLineWidth() const
   {
-    double step = (endR_ - startR_) / FrameWork::segmentsCount;
-    lineWidth_ = FrameWork::segmentsCount * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+    int segmentsCount = getSegmentsCount();
+    double step = (endR_ - startR_) / segmentsCount;
+    lineWidth_ = segmentsCount * R_ * sqrt(pow(1 - cos(step), 2) + pow(sin(step), 2));
+  }
+
+  int Arc::getSegmentsCount() const
+  {
+    return normsSegments_ * R_;
   }
 
   Polygon::Polygon(const std::vector<Point2d>& points) :

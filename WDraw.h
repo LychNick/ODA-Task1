@@ -1,22 +1,10 @@
 #pragma once
-#include "Point2d.h"
 
-class WDraw
+#include "Draw.h"
+
+class WDraw : public Draw
 {
-
 public:
-
-    WDraw(void);
-    virtual ~WDraw(void);
-
-    /************************************************************************/
-    /* Основной метод отрисовки                                             */
-    /************************************************************************/
-    virtual void drawSegment(const Point2d& p1, const Point2d& p2) const;
-
-    /************************************************************************/
-    /*                                                                      */
-    /************************************************************************/
-    virtual void drawText(const char* text) const;
-
+  void drawSegment(const Point2d& p1, const Point2d& p2) const override;
+  void drawPolyLine(const std::vector<Point2d>& vertices) const override;
 };

@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Drawer.h"
-#include "OpenGLDraw.h"
+#include "WDraw.h"
 
-class OpenGLDrawer: public Drawer
+class WDrawer: public Drawer
 {
 public:
-  OpenGLDrawer();
+  WDrawer();
   void drawShapes(const std::vector<std::shared_ptr<FrameWork::Shape>>& shapes) const override;
 private:
-  std::shared_ptr<OpenGLDraw> draw_;
+  std::shared_ptr<WDraw> draw_;
 };
-

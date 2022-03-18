@@ -1,123 +1,134 @@
 #include "Drawer.h"
 
-Drawer::Drawer()
-{
-}
-
-Drawer::~Drawer()
-{
-}
-
-void Drawer::drawBoundingBox(std::shared_ptr<FrameWork::BoundingBox> box) const
+void Drawer::drawBoundingBox(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::BoundingBox> box) const
 {
   Point2d leftDown = box->getLeftDownPoint();
   Point2d rightUp = box->getRightUpPoint();
-  wdraw_.drawText("Drawing BoundingBox:");
-  wdraw_.drawSegment(leftDown, Point2d(leftDown.x(), rightUp.y()));
-  wdraw_.drawSegment(Point2d(leftDown.x(), rightUp.y()), rightUp);
-  wdraw_.drawSegment(rightUp, Point2d(rightUp.x(), leftDown.y()));
-  wdraw_.drawSegment(Point2d(rightUp.x(), leftDown.y()), leftDown);
+
+  std::vector<Point2d> vertices;
+
+  vertices.push_back(leftDown);
+  vertices.push_back({leftDown.x(), rightUp.y()});
+  vertices.push_back(rightUp);
+  vertices.push_back({rightUp.x(), leftDown.y()});
+  vertices.push_back(leftDown);
+
+  draw->drawText("BoundingBox:");
+  draw->drawPolyLine(vertices);
 }
 
-void Drawer::drawSquare(std::shared_ptr<FrameWork::Square> square) const
+void Drawer::drawSquare(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Square> square) const
 {
   Point2d leftDown = square->getLeftDownPoint();
   Point2d rightUp = square->getRightUpPoint();
-  wdraw_.drawText("Drawing Square:");
-  wdraw_.drawSegment(leftDown, Point2d(leftDown.x(), rightUp.y()));
-  wdraw_.drawSegment(Point2d(leftDown.x(), rightUp.y()), rightUp);
-  wdraw_.drawSegment(rightUp, Point2d(rightUp.x(), leftDown.y()));
-  wdraw_.drawSegment(Point2d(rightUp.x(), leftDown.y()), leftDown);
-  wdraw_.drawText(("Line width: " 
-    + std::to_string(square->getLineWidth())).c_str());
+
+  std::vector<Point2d> vertices;
+
+  vertices.push_back(leftDown);
+  vertices.push_back({leftDown.x(), rightUp.y()});
+  vertices.push_back(rightUp);
+  vertices.push_back({rightUp.x(), leftDown.y()});
+  vertices.push_back(leftDown);
+
+  draw->drawText("Square:");
+  draw->drawPolyLine(vertices);
 }
 
-void Drawer::drawCircle(std::shared_ptr<FrameWork::Circle> circle) const
+void Drawer::drawCircle(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Circle> circle) const
 {
-  wdraw_.drawText("Drawing Circle:");
+  std::vector<Point2d> vertices;
+
   double R = circle->getR();
   Point2d centerPoint = circle->getCenterPoint();
-  double step = 2 * M_PI / FrameWork::segmentsCount;
-  for (double i = 0; i < FrameWork::segmentsCount; i++)
+
+  double segmentsCount = circle->getSegmentsCount() * detailing_;
+
+  double step = 2 * M_PI / segmentsCount;
+  for (double i = 0; i <= segmentsCount; i++)
   {
-    wdraw_.drawSegment(centerPoint + Point2d(R * cos(step * i), R * sin(step * i)),
-      centerPoint + Point2d(R * cos(step * (i + 1)), R * sin(step * (i + 1))));
+    vertices.push_back(Point2d(centerPoint + Point2d(R * cos(step * i), R * sin(step * i))));
   }
-  wdraw_.drawText(("Line width: "
-    + std::to_string(circle->getLineWidth())).c_str());
+
+  draw->drawText("Circle:");
+  draw->drawPolyLine(vertices);
 }
 
-void Drawer::drawArc(std::shared_ptr<FrameWork::Arc> arc) const
+void Drawer::drawArc(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Arc> arc) const
 {
-  wdraw_.drawText("Drawing Arc:");
+
+  std::vector<Point2d> vertices;
+
   double R = arc->getR();
   Point2d centerPoint = arc->getCenterPoint();
   double startR = arc->getStartR();
   double endR = arc->getEndR();
-  double step = (endR - startR) / FrameWork::segmentsCount;
-  for (double i = 0; i < FrameWork::segmentsCount; i++)
+
+  double segmentsCount = arc->getSegmentsCount() * detailing_;
+
+  double step = (endR - startR) / segmentsCount;
+  for (double i = 0; i <= segmentsCount; i++)
   {
-    wdraw_.drawSegment(centerPoint + Point2d(R * cos(startR + step * i), R * sin(startR + step * i)),
-      centerPoint + Point2d(R * cos(step * (i + 1)), R * sin(step * (i + 1))));
+    vertices.push_back(Point2d(centerPoint + Point2d(R * cos(startR + step * i), 
+      R * sin(startR + step * i))));
   }
-  wdraw_.drawText(("Line width: "
-    + std::to_string(arc->getLineWidth())).c_str());
+
+  draw->drawText("Arc:");
+  draw->drawPolyLine(vertices);
 }
 
-void Drawer::drawPolygon(std::shared_ptr<FrameWork::Polygon> polygon) const
+void Drawer::drawPolygon(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::Polygon> polygon) const
 {
-  wdraw_.drawText("Drawing Polygon:");
-  for (size_t i = 0; i < polygon->getPoints().size() - 1; i++)
-  {
-    wdraw_.drawSegment(polygon->getPoints()[i], polygon->getPoints()[i + 1]);
-  }
-  wdraw_.drawSegment(polygon->getPoints()[polygon->getPoints().size()-1], 
-    polygon->getPoints()[0]);
-  wdraw_.drawText(("Line width: "
-    + std::to_string(polygon->getLineWidth())).c_str());
+  draw->drawText("Polygon:");
+  draw->drawPolyLine(polygon->getPoints());
 }
 
-void Drawer::drawBrokenLine(std::shared_ptr<FrameWork::BrokenLine> brokenLine) const
+void Drawer::drawBrokenLine(const std::shared_ptr<Draw> draw, const std::shared_ptr<FrameWork::BrokenLine> brokenLine) const
 {
-  wdraw_.drawText("Drawing BrokenLine:");
-  for (size_t i = 0; i < brokenLine->getPoints().size() - 1; i++)
-  {
-    wdraw_.drawSegment(brokenLine->getPoints()[i], brokenLine->getPoints()[i + 1]);
-  }
-  wdraw_.drawText(("Line width: "
-    + std::to_string(brokenLine->getLineWidth())).c_str());
+  draw->drawText("BrokenLine:");
+  draw->drawPolyLine(brokenLine->getPoints());
 }
 
-void Drawer::drawShape(std::shared_ptr<FrameWork::Shape> shape)
+void Drawer::drawShape(std::shared_ptr<Draw> draw,
+  std::shared_ptr<FrameWork::Shape> shape) const
 {
   switch (shape->getShapeType())
   {
   case FrameWork::TYPE_SQUARE:
   {
-    drawSquare(std::static_pointer_cast<FrameWork::Square>(shape));
+    drawSquare(draw, std::static_pointer_cast<FrameWork::Square>(shape));
+    drawBoundingBox(draw, shape->getBoundingBox());
     break;
   }
   case FrameWork::TYPE_CIRCLE:
   {
-    drawCircle(std::static_pointer_cast<FrameWork::Circle>(shape));
+    drawCircle(draw, std::static_pointer_cast<FrameWork::Circle>(shape));
+    drawBoundingBox(draw, shape->getBoundingBox());
     break;
   }
   case FrameWork::TYPE_ARC:
   {
-    drawArc(std::static_pointer_cast<FrameWork::Arc>(shape));
+    drawArc(draw, std::static_pointer_cast<FrameWork::Arc>(shape));
+    drawBoundingBox(draw, shape->getBoundingBox());
     break;
   }
   case FrameWork::TYPE_POLYGON:
   {
-    drawPolygon(std::static_pointer_cast<FrameWork::Polygon>(shape));
+    drawPolygon(draw, std::static_pointer_cast<FrameWork::Polygon>(shape));
+    drawBoundingBox(draw, shape->getBoundingBox());
     break;
   }
   case FrameWork::TYPE_BROKEN_LINE:
   {
-    drawBrokenLine(std::static_pointer_cast<FrameWork::BrokenLine>(shape));
+    drawBrokenLine(draw, std::static_pointer_cast<FrameWork::BrokenLine>(shape));
+    drawBoundingBox(draw, shape->getBoundingBox());
     break;
   }
   default:
     break;
   }
+}
+
+void Drawer::setupDetailing(double detailing)
+{
+  detailing_ = detailing;
 }
