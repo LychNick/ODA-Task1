@@ -1,6 +1,11 @@
 #include "Point2d.h"
 
 
+Point2d::Point2d():
+  m_dX(0),
+  m_dY(0)
+{}
+
 Point2d::Point2d(double xx, double yy) :
   m_dX(xx), m_dY(yy)
 {

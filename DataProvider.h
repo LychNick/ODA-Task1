@@ -5,15 +5,11 @@
 class DataProvider
 {
 public:
-    DataProvider(void);
-    virtual ~DataProvider(void);
+    DataProvider(void) = default;
+    virtual ~DataProvider(void) = default;
 
-    virtual int rdInt();
-    virtual double rdDouble();
-
-protected:
-    void checkC();
-
-    int c;
-    long maxC;
+    virtual void open() const = 0;
+    virtual void close() const = 0;
+    virtual int rdInt() const = 0;
+    virtual double rdDouble() const = 0;
 };

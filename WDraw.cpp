@@ -9,7 +9,7 @@ void WDraw::drawSegment (const Point2d& p1, const Point2d& p2) const
 
 void WDraw::drawPolyLine(const std::vector<Point2d>& vertices) const
 {
-  for (int i = 0; i < vertices.size() - 1; i++)
+  for (size_t i = 0; i < vertices.size() - 1; i++)
   {
     printf("(%f, %f) - (%f, %f)\n", vertices[i].x(), vertices[i].y(),
       vertices[i + 1].x(), vertices[i + 1].y());

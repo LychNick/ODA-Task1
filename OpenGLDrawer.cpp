@@ -9,7 +9,7 @@ OpenGLDrawer::OpenGLDrawer()
 void OpenGLDrawer::drawShapes(const std::vector<std::shared_ptr<FrameWork::Shape>>& shapes) const
 {
   draw_->createWindow(glm::vec2(800, 600), "Task2");
-  for (int i = 0; i < shapes.size(); i++) 
+  for (size_t i = 0; i < shapes.size(); i++) 
   {
     drawShape(draw_, shapes[i]);
   }

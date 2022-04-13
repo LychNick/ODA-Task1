@@ -64,7 +64,7 @@ namespace FrameWork
 
   int Circle::getSegmentsCount() const
   {
-    return normsSegments_ * R_;
+    return static_cast<int>(normsSegments_ * R_);
   }
 
   Arc::Arc(const Point2d& centerPoint, double R, double startR, double endR) :
@@ -115,7 +115,7 @@ namespace FrameWork
 
   int Arc::getSegmentsCount() const
   {
-    return normsSegments_ * R_;
+    return static_cast<int>(normsSegments_ * R_);
   }
 
   Polygon::Polygon(const std::vector<Point2d>& points) :
@@ -217,7 +217,8 @@ namespace FrameWork
   {
     if (data.size() != 4)
     {
-      throw std::invalid_argument("bad Square data");
+      printf("%s\n", "Bad square data");
+      return nullptr;
     }
     return std::make_shared<Square>(Point2d(data[0], data[1]), Point2d(data[2], data[3]));
   }
@@ -226,7 +227,8 @@ namespace FrameWork
   {
     if (data.size() != 3)
     {
-      throw std::invalid_argument("bad Circle data");
+      printf("%s\n", "Bad Circle data");
+      return nullptr;
     }
     return std::make_shared<Circle>(Point2d(data[0], data[1]), data[2]);
   }
@@ -235,7 +237,8 @@ namespace FrameWork
   {
     if (data.size() != 5)
     {
-      throw std::invalid_argument("bad Arc data");
+      printf("%s\n", "Bad Arc data");
+      return nullptr;
     }
     return std::make_shared<Arc>(Point2d(data[0], data[1]), data[2], data[3], data[4]);
   }
@@ -244,7 +247,8 @@ namespace FrameWork
   {
     if ((data.size() % 2 != 0) || (data.size() < 3 * POINT_SIZE))
     {
-      throw std::invalid_argument("bad Polygon data");
+      printf("%s\n", "Bad Polygon data");
+      return nullptr;
     }
 
     std::vector<Point2d> points;
@@ -260,7 +264,8 @@ namespace FrameWork
   {
     if ((data.size() % 2 != 0) || (data.size() < 2 * POINT_SIZE))
     {
-      throw std::invalid_argument("bad Polygon data");
+      printf("%s\n", "Bad Broken Line data");
+      return nullptr;
     }
 
     std::vector<Point2d> points;
@@ -302,6 +307,7 @@ namespace FrameWork
       break;
     }
     default:
+      printf("%s\n", "Unknown shape");
       return nullptr;
       break;
     }
@@ -313,4 +319,110 @@ namespace FrameWork
   {
   }
 
+  const std::vector<double> Exporter::exportSquare(std::shared_ptr<Square> square)
+  {
+    std::vector<double> data(4);
+
+    const Point2d& leftDown = square->getLeftDownPoint();
+    const Point2d& rightUp = square->getRightUpPoint();
+    data[0] = leftDown.x();
+    data[1] = leftDown.y();
+    data[2] = rightUp.x();
+    data[3] = rightUp.y();
+
+    return data;
+  }
+
+  const std::vector<double> Exporter::exportCircle(std::shared_ptr<Circle> circle)
+  {
+    std::vector<double> data(3);
+
+    const Point2d& center = circle->getCenterPoint();
+    double R = circle->getR();
+    data[0] = center.x();
+    data[1] = center.y();
+    data[2] = R;
+
+    return data;
+  }
+
+  const std::vector<double> Exporter::exportArc(std::shared_ptr<Arc> arc)
+  {
+    std::vector<double> data(5);
+
+    const Point2d& center = arc->getCenterPoint();
+    double R = arc->getR();
+    double startR = arc->getStartR();
+    double endR = arc->getEndR();
+    data[0] = center.x();
+    data[1] = center.y();
+    data[2] = R;
+    data[3] = startR;
+    data[4] = endR;
+
+    return data;
+  }
+
+  const std::vector<double> Exporter::exportPolygon(std::shared_ptr<Polygon> polygon)
+  {
+    const std::vector<Point2d>& points = polygon->getPoints();
+    std::vector<double> data(points.size() * 2);
+    int j = 0;
+    for (int i = 0; i < points.size(); i++, j += 2)
+    {
+      data[j] = points[i].x();
+      data[j + 1] = points[i].y();
+    }
+    return data;
+  }
+
+  const std::vector<double> Exporter::exportBrokenLine(std::shared_ptr<BrokenLine> brokenLine)
+  {
+    const std::vector<Point2d>& points = brokenLine->getPoints();
+    std::vector<double> data(points.size() * 2);
+    int j = 0;
+    for (int i = 0; i < points.size(); i++, j += 2)
+    {
+      data[j] = points[i].x();
+      data[j + 1] = points[i].y();
+    }
+    return data;
+  }
+
+  const std::vector<double> Exporter::exportShape(std::shared_ptr<Shape> shape)
+  {
+    if (shape)
+    {
+      switch (shape->getShapeType())
+      {
+      case TYPE_SQUARE:
+      {
+        return exportSquare(std::static_pointer_cast<FrameWork::Square>(shape));
+        break;
+      }
+      case TYPE_CIRCLE:
+      {
+        return exportCircle(std::static_pointer_cast<FrameWork::Circle>(shape));
+        break;
+      }
+      case TYPE_ARC:
+      {
+        return exportArc(std::static_pointer_cast<FrameWork::Arc>(shape));
+        break;
+      }
+      case TYPE_POLYGON:
+      {
+        return exportPolygon(std::static_pointer_cast<FrameWork::Polygon>(shape));
+        break;
+      }
+      case TYPE_BROKEN_LINE:
+      {
+        return exportBrokenLine(std::static_pointer_cast<FrameWork::BrokenLine>(shape));
+        break;
+      }
+      default:
+        break;
+      }
+    }
+  }
 }

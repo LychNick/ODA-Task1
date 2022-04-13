@@ -10,19 +10,19 @@ const GLuint CORD_SIZE = 3;
 
 struct entity_t 
 {
-  GLuint VAO;
-  GLuint size;
+  GLuint VAO = -1;
+  GLuint size = -1;
 };
 
+std::mutex mtx;
 std::vector<entity_t> Entities_;
+std::vector<std::vector<Point2d>> buffer;
 
 void drawEntity(const entity_t& entity)
 {
   glUseProgram(mainShader_);
-  checkGLError(__FILE__, __LINE__);
 
   glBindVertexArray(entity.VAO);
-  checkGLError(__FILE__, __LINE__);
 
   glEnableVertexAttribArray(0);
 
@@ -32,92 +32,25 @@ void drawEntity(const entity_t& entity)
 
   GLuint locMVP = glGetUniformLocation(mainShader_, "Matrix");
   glUniformMatrix4fv(locMVP, 1, GL_FALSE, &OMVP_[0][0]);
-  checkGLError(__FILE__, __LINE__);
 
   GLuint locTrans = glGetUniformLocation(mainShader_, "Translate");
   glUniformMatrix4fv(locTrans, 1, GL_FALSE, &globalTranslate[0][0]);
-  checkGLError(__FILE__, __LINE__);
 
   GLuint locRot = glGetUniformLocation(mainShader_, "Rotate");
   glUniformMatrix4fv(locRot, 1, GL_FALSE, &rotate[0][0]);
-  checkGLError(__FILE__, __LINE__);
 
   GLuint locScale = glGetUniformLocation(mainShader_, "Scale");
   glUniformMatrix4fv(locScale, 1, GL_FALSE, &scale[0][0]);
-  checkGLError(__FILE__, __LINE__);
 
   GLuint locColor = glGetUniformLocation(mainShader_, "mainColor");
   glUniform4f(locColor, 0, 0, 0, 1);
-  checkGLError(__FILE__, __LINE__);
 
 
   glPolygonMode(GL_FRONT, GL_FILL);
-  checkGLError(__FILE__, __LINE__);
   glPointSize(5);
   glDrawArrays(DRAW_TYPE, 0, entity.size);
-  checkGLError(__FILE__, __LINE__);
   glDisableVertexAttribArray(0);
   glBindVertexArray(0);
-}
-
-void drawFunc()
-{
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  checkGLError(__FILE__, __LINE__);
-  for (size_t i = 0; i < Entities_.size(); i++)
-  {
-    drawEntity(Entities_[i]);
-  }
-  checkGLError(__FILE__, __LINE__);
-  glutSwapBuffers();
-  glutPostRedisplay();
-}
-
-void mouseWheel(int button, int dir, int x, int y)
-{
-  if (dir > 0)
-  {
-    globalScale *= 2;
-  } else
-  {
-    globalScale /= 2;
-  }
-}
-
-void mouseState(int button, int state, int x, int y)
-{
-  static glm::vec2 winPos = glm::vec2(x, y);
-  switch (button)
-  {
-  case GLUT_LEFT_BUTTON:
-  {
-    if (state == GLUT_DOWN)
-    {
-      winPos = {x, y};
-
-    }
-    if (state == GLUT_UP)
-    {
-      glm::vec2 shift = glm::vec2(x, y) - winPos;
-      shift.y = -shift.y;
-      globalTranslate = glm::translate(globalTranslate,
-        glm::vec3(shift, 0) / globalScale);
-    }
-    break;
-  }
-  default:
-    break;
-  }
-}
-
-void checkGLError(const std::string& file, GLuint line)
-{
-  GLenum error = glGetError();
-  if (error != 0)
-  {
-    throw std::invalid_argument("GL error: " + std::to_string(error)
-      + " at " + file + " in " + std::to_string(line));
-  }
 }
 
 
@@ -208,39 +141,9 @@ void OpenGLDraw::drawSegment(const Point2d& p1, const Point2d& p2) const
 
 void OpenGLDraw::drawPolyLine(const std::vector<Point2d>& vertices) const
 {
-  GLuint VAO = 0;
-  glGenVertexArrays(1, &VAO);
-  
-  GLuint VBOs[1];
-  
-  glGenBuffers(1, VBOs);
-  
-  GLuint positionBuffer_ = VBOs[0];
-  
-  glBindVertexArray(VAO);
-  
-  glEnableVertexAttribArray(0);
-  
-  std::vector<GLdouble> coordinates;
-  for (int i = 0; i < vertices.size(); i++) 
-  {
-    coordinates.push_back(vertices[i].x());
-    coordinates.push_back(vertices[i].y());
-    coordinates.push_back(0);
-  }
-
-  glBindBuffer(GL_ARRAY_BUFFER, positionBuffer_);
-  glVertexAttribPointer(0, CORD_SIZE, GL_DOUBLE, GL_FALSE, 0, NULL);
-  glBufferData(GL_ARRAY_BUFFER,
-    sizeof(GLdouble) * coordinates.size(), coordinates.data(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  
-  glDisableVertexAttribArray(0);
-  glBindVertexArray(0);
-  entity_t newEntity;
-  newEntity.VAO = VAO;
-  newEntity.size = vertices.size();
-  Entities_.push_back(newEntity);
+  mtx.lock();
+  buffer.push_back(vertices);
+  mtx.unlock();
 }
 
 void OpenGLDraw::initLoop()
@@ -269,7 +172,7 @@ GLuint OpenGLDraw::createShader(GLuint type, const std::wstring& file) const
     std::getline(shaderFile, tmpLine);
     readData += tmpLine + '\n';
   }
-  GLchar* shaderCode = const_cast<char*>(readData.data());
+  const GLchar* shaderCode = readData.data();
 
   glShaderSource(newShader, 1, &shaderCode, NULL);
   glCompileShader(newShader);
@@ -348,4 +251,107 @@ GLuint OpenGLDraw::createShaderPair(const std::wstring& fragmentShader, const st
   printf("%s\n", "Shader program created and compiled!");
 
   return programHandle;
+}
+
+void popFromBuffer()
+{
+  mtx.lock();
+  if (buffer.size() > 0) 
+  {
+    GLuint VAO = 0;
+    glGenVertexArrays(1, &VAO);
+    GLuint VBOs[1];
+
+    glGenBuffers(1, VBOs);
+
+    GLuint positionBuffer_ = VBOs[0];
+
+    glBindVertexArray(VAO);
+
+    glEnableVertexAttribArray(0);
+
+    std::vector<GLdouble> coordinates(buffer.back().size() * CORD_SIZE);
+    int j = 0;
+    for (size_t i = 0; i < buffer.back().size(); i++, j += 3)
+    {
+      coordinates[j] = buffer.back()[i].x();
+      coordinates[j + 1] = buffer.back()[i].y();
+      coordinates[j + 2] = 0;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, positionBuffer_);
+    glVertexAttribPointer(0, CORD_SIZE, GL_DOUBLE, GL_FALSE, 0, NULL);
+    glBufferData(GL_ARRAY_BUFFER,
+      sizeof(GLdouble) * coordinates.size(), coordinates.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+    entity_t newEntity;
+    newEntity.VAO = VAO;
+    newEntity.size = coordinates.size() / 3;
+    Entities_.push_back(newEntity);
+    buffer.pop_back();
+  }
+  mtx.unlock();
+}
+
+void drawFunc()
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  popFromBuffer();
+  for (size_t i = 0; i < Entities_.size(); i++)
+  {
+    drawEntity(Entities_[i]);
+  }
+  glutSwapBuffers();
+  glutPostRedisplay();
+}
+
+void mouseWheel(int button, int dir, int x, int y)
+{
+  if (dir > 0)
+  {
+    globalScale *= 2;
+  } else
+  {
+    globalScale /= 2;
+  }
+}
+
+void mouseState(int button, int state, int x, int y)
+{
+  static glm::vec2 winPos = glm::vec2(x, y);
+  switch (button)
+  {
+  case GLUT_LEFT_BUTTON:
+  {
+    if (state == GLUT_DOWN)
+    {
+      winPos = {x, y};
+
+    }
+    if (state == GLUT_UP)
+    {
+      glm::vec2 shift = glm::vec2(x, y) - winPos;
+      shift.y = -shift.y;
+      globalTranslate = glm::translate(globalTranslate,
+        glm::vec3(shift, 0) / globalScale);
+    }
+    break;
+  }
+  default:
+    break;
+  }
+}
+
+const std::string getGLError(const std::string& file, GLuint line)
+{
+  GLenum error = glGetError();
+  if (error != 0)
+  {
+    return ("GL error: " + std::to_string(error)
+      + " at " + file + " in " + std::to_string(line));
+  }
+  return "";
 }

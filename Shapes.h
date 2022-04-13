@@ -60,8 +60,8 @@ namespace FrameWork
     int getShapeType() const override { return TYPE_SQUARE; };
     void calcBoundingBox() const override;
     void calcLineWidth() const override;
-    Point2d getLeftDownPoint() const { return leftDown_; };
-    Point2d getRightUpPoint() const { return rightUp_; };
+    const Point2d& getLeftDownPoint() const { return leftDown_; };
+    const Point2d& getRightUpPoint() const { return rightUp_; };
   private:
     Point2d leftDown_;
     Point2d rightUp_;
@@ -74,7 +74,7 @@ namespace FrameWork
     int getShapeType() const override { return TYPE_CIRCLE; };
     void calcBoundingBox() const override;
     void calcLineWidth() const override;
-    Point2d getCenterPoint() const { return centerPoint_; };
+    const Point2d& getCenterPoint() const { return centerPoint_; };
     double getR() const { return R_; };
     int getSegmentsCount() const;
   private:
@@ -109,7 +109,7 @@ namespace FrameWork
     int getShapeType() const override { return TYPE_POLYGON; };
     void calcBoundingBox() const override;
     void calcLineWidth() const override;
-    std::vector<Point2d> getPoints() const { return points_; };
+    const std::vector<Point2d>& getPoints() const { return points_; };
   private:
     std::vector<Point2d> points_;
   };
@@ -122,11 +122,10 @@ namespace FrameWork
     int getShapeType() const override { return TYPE_BROKEN_LINE; };
     void calcBoundingBox() const override;
     void calcLineWidth() const override;
-    std::vector<Point2d> getPoints() const { return points_; };
+    const std::vector<Point2d>& getPoints() const { return points_; };
   private:
     std::vector<Point2d> points_;
   };
-
 
   class ShapeFactory //Reader
   {
@@ -137,5 +136,16 @@ namespace FrameWork
     static std::shared_ptr<Polygon> buildPolygon(const std::vector<double>& data);
     static std::shared_ptr<BrokenLine> buildBrokenLine(const std::vector<double>& data);
     static std::shared_ptr<Shape> buildShape(const int& type, const std::vector<double>& data);
+  };
+
+  class Exporter 
+  {
+  public:
+    static const std::vector<double> exportSquare(std::shared_ptr<Square> square);
+    static const std::vector<double> exportCircle(std::shared_ptr<Circle> circle);
+    static const std::vector<double> exportArc(std::shared_ptr<Arc> arc);
+    static const std::vector<double> exportPolygon(std::shared_ptr<Polygon> polygon);
+    static const std::vector<double> exportBrokenLine(std::shared_ptr<BrokenLine> brokenLine);
+    static const std::vector<double> exportShape(std::shared_ptr<Shape> shape);
   };
 }

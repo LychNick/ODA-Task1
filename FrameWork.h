@@ -5,18 +5,23 @@
 #include <vector>
 
 #include "DataProvider.h"
+#include "DataExporter.h"
 #include "Exceptions.h"
 #include "Shapes.h"
 #include "Drawer.h"
 #include "Loader.h"
 
-//#include "OpenGLDrawer.h"
+#include "OpenGLDraw.h"
 
 namespace FrameWork
 {
-  static std::vector<std::shared_ptr<FrameWork::Shape>> baseShapes_;
+  static const Drawer drawer;
 
-  void loadShapes(const std::unique_ptr<Loader> loader);
-  void drawShapes(const std::unique_ptr<Drawer> drawer, double detailing);
+  void loadShapes(const DataProvider& dataProvider);
+  void saveShapes(const DataExporter& dataExporter);
+  void drawShapes(const Draw& draw, double detailing);
+  void addShape(const std::shared_ptr<FrameWork::Shape> shape);
+
+  void drawShape(const Draw& draw, std::shared_ptr<Shape> shape, double detailing);
 
 }

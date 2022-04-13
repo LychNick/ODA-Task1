@@ -129,16 +129,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryDataExporter.cpp" />
+    <ClCompile Include="BinaryDataProvider.cpp" />
     <ClCompile Include="CivilDeveloperTask.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Tests|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="DataProvider.cpp" />
+    <ClCompile Include="TestDataProvider.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="FrameWork.cpp" />
     <ClCompile Include="OpenGLDraw.cpp" />
-    <ClCompile Include="OpenGLDrawer.cpp" />
     <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Test.cpp">
@@ -146,12 +147,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="TestLoader.cpp" />
     <ClCompile Include="WDraw.cpp" />
-    <ClCompile Include="WDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryLoader.h" />
+    <ClInclude Include="BinaryDataExporter.h" />
+    <ClInclude Include="BinaryDataProvider.h" />
+    <ClInclude Include="DataExporter.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="Drawer.h" />
@@ -159,12 +160,10 @@
     <ClInclude Include="FrameWork.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="OpenGLDraw.h" />
-    <ClInclude Include="OpenGLDrawer.h" />
     <ClInclude Include="Point2d.h" />
     <ClInclude Include="Shapes.h" />
-    <ClInclude Include="TestLoader.h" />
+    <ClInclude Include="TestDataProvider.h" />
     <ClInclude Include="WDraw.h" />
-    <ClInclude Include="WDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <fstream>
 #include <vector>
+#include <mutex>
 
 #include "Draw.h"
 #include "Exceptions.h"
@@ -20,7 +21,7 @@ void drawFunc();
 void mouseWheel(int button, int dir, int x, int y);
 void mouseState(int button, int state, int x, int y);
 
-void checkGLError(const std::string& file, GLuint line);
+const std::string getGLError(const std::string& file, GLuint line);
 
 class OpenGLDraw: public Draw
 {
@@ -40,7 +41,6 @@ private:
   GLuint createShaderPair(const std::wstring& fragmentShader, const std::wstring& vertexShader) const;
   void setCurrentDir();
   void openGLInit() const;
-
   mutable GLuint windowHandler_ = 0;
   std::wstring mainDir_;
 };

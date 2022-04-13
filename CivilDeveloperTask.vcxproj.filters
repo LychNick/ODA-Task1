@@ -18,7 +18,7 @@
     <ClCompile Include="CivilDeveloperTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DataProvider.cpp">
+    <ClCompile Include="TestDataProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Exceptions.cpp">
@@ -45,16 +45,13 @@
     <ClCompile Include="Draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGLDrawer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGLDraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestLoader.cpp">
+    <ClCompile Include="BinaryDataProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WDrawer.cpp">
+    <ClCompile Include="BinaryDataExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,25 +77,25 @@
     <ClInclude Include="Drawer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGLDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Draw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGLDrawer.h">
+    <ClInclude Include="BinaryDataProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestLoader.h">
+    <ClInclude Include="OpenGLDraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BinaryLoader.h">
+    <ClInclude Include="TestDataProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WDrawer.h">
+    <ClInclude Include="DataExporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryDataExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

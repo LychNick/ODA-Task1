@@ -7,7 +7,7 @@ WDrawer::WDrawer()
 
 void WDrawer::drawShapes(const std::vector<std::shared_ptr<FrameWork::Shape>>& shapes) const
 {
-  for (int i = 0; i < shapes.size(); i++)
+  for (size_t i = 0; i < shapes.size(); i++)
   {
     drawShape(draw_, shapes[i]);
   }
